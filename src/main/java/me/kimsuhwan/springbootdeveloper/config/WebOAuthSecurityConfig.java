@@ -7,6 +7,7 @@ import me.kimsuhwan.springbootdeveloper.config.oauth.OAuth2SuccessHandler;
 import me.kimsuhwan.springbootdeveloper.config.oauth.OAuth2UserCustomService;
 import me.kimsuhwan.springbootdeveloper.repository.RefreshTokenRepository;
 import me.kimsuhwan.springbootdeveloper.service.UserService;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class WebOAuthSecurityConfig {
     @Bean
     public WebSecurityCustomizer configure() { // 스프링 시큐리티 기능 비활성화
         return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .requestMatchers(toH2Console())
                 .requestMatchers(
                         new AntPathRequestMatcher("/img/**"),

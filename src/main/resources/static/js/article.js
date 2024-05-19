@@ -133,7 +133,7 @@ function httpRequest(method, url, body, success, fail) {
 const logoutBtn = document.getElementById("logout-btn");
 
 if(logoutBtn) {
-    logoutBtn.addEventListener("click", (event) => {
+    logoutBtn.addEventListener("click", event => {
 
         function success() {
             alert("로그아웃이 완료되었습니다.");
@@ -147,7 +147,30 @@ if(logoutBtn) {
             alert("로그아웃이 실패했습니다.");
         }
 
-        httpRequest('DELETE', '/api/refresh-token' null, success, fail);
-    })
+        httpRequest('DELETE', '/api/refresh-token' , null, success, fail);
+    });
+}
 
+// 댓글 생성
+const commentCreateButton = document.getElementById('comment-create-btn');
+
+if(commentCreateButton) {
+    commentCreateButton.addEventListener('click', event => {
+        articleId = document.getElementById('article-id').value;
+
+        body = JSON.stringify({
+            articleId : articleId,
+            content : document.getElementById('content').value
+        });
+        function success() {
+            alert('등록이 완료되었습니다.');
+            location.replace('/articles/'+articleId);
+        };
+        function fail() {
+            alert('등록에 실패했습니다.');
+            location.replace('/articles/'+articleId);
+        }
+
+        httpRequest('POST', '/api/comments', body, success, fail)
+    });
 }

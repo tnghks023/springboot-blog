@@ -3,10 +3,13 @@ package me.kimsuhwan.springbootdeveloper.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kimsuhwan.springbootdeveloper.config.error.ErrorCode;
 import me.kimsuhwan.springbootdeveloper.domain.Article;
+import me.kimsuhwan.springbootdeveloper.domain.Comment;
 import me.kimsuhwan.springbootdeveloper.domain.User;
 import me.kimsuhwan.springbootdeveloper.dto.AddArticleRequest;
+import me.kimsuhwan.springbootdeveloper.dto.AddCommentRequest;
 import me.kimsuhwan.springbootdeveloper.dto.UpdateArticleRequest;
 import me.kimsuhwan.springbootdeveloper.repository.BlogRepository;
+import me.kimsuhwan.springbootdeveloper.repository.CommentRepository;
 import me.kimsuhwan.springbootdeveloper.repository.UserRepository;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,12 +61,16 @@ class BlogApiControllerTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CommentRepository commentRepository;
+
     User user;
 
     @BeforeEach
     public void mockMvcSetUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         blogRepository.deleteAll();
+        commentRepository.deleteAll();
     }
 
     @BeforeEach
@@ -183,15 +190,6 @@ class BlogApiControllerTest {
         assertThat(article.getContent()).isEqualTo(newContent);
     }
 
-    private Article createDefaultArticle() {
-        return blogRepository.save(Article.builder()
-                .title("title")
-                .author(user.getUsername())
-                .content("content")
-                .build());
-
-    }
-
     @DisplayName("addArticle : 아트클 추가할 때 title이 null이면 실패한다")
     @Test
     public void addArticleNullValidation() throws Exception{
@@ -278,4 +276,45 @@ class BlogApiControllerTest {
 
     }
 
+    @DisplayName("addComment: 댓글 추가에 성공한다")
+    @Test
+    public void addComment() throws Exception {
+        //given
+        final String url = "/api/comments";
+
+        Article savedArticle = createDefaultArticle();
+        final Long articleId = savedArticle.getId();
+        final String content = "content";
+        final AddCommentRequest userRequest = new AddCommentRequest(articleId, content);
+        final String requestBody = objectMapper.writeValueAsString(userRequest);
+
+        Principal principal = Mockito.mock(Principal.class);
+        Mockito.when(principal.getName()).thenReturn("username");
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .principal(principal)
+                .content(requestBody)
+        );
+
+        //then
+        resultActions.andExpect(status().isCreated());
+
+        List<Comment> comments = commentRepository.findAll();
+
+        assertThat(comments.size()).isEqualTo(1);
+        assertThat(comments.get(0).getArticle().getId()).isEqualTo(articleId);
+        assertThat(comments.get(0).getContent()).isEqualTo(content);
+
+    }
+
+    private Article createDefaultArticle() {
+        return blogRepository.save(Article.builder()
+                .title("title")
+                .author(user.getUsername())
+                .content("content")
+                .build());
+
+    }
 }
