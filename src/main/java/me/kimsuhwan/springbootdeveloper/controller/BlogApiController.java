@@ -63,5 +63,18 @@ public class BlogApiController {
                 .body(new AddCommentResponse(savedComment));
     }
 
+    @DeleteMapping("/api/comments/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable long id) {
+        blogService.deleteComment(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/api/comments/{id}")
+    public ResponseEntity<Comment> updateComment(@PathVariable long id, @RequestBody UpdateCommentRequest request) {
+        Comment updatedComment = blogService.updateComment(id, request);
+
+        return ResponseEntity.ok().body(updatedComment);
+    }
 
 }

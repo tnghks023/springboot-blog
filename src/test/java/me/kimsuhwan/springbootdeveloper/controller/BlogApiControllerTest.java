@@ -8,6 +8,7 @@ import me.kimsuhwan.springbootdeveloper.domain.User;
 import me.kimsuhwan.springbootdeveloper.dto.AddArticleRequest;
 import me.kimsuhwan.springbootdeveloper.dto.AddCommentRequest;
 import me.kimsuhwan.springbootdeveloper.dto.UpdateArticleRequest;
+import me.kimsuhwan.springbootdeveloper.dto.UpdateCommentRequest;
 import me.kimsuhwan.springbootdeveloper.repository.BlogRepository;
 import me.kimsuhwan.springbootdeveloper.repository.CommentRepository;
 import me.kimsuhwan.springbootdeveloper.repository.UserRepository;
@@ -309,9 +310,61 @@ class BlogApiControllerTest {
 
     }
 
+    @DisplayName("deleteComment : 댓글 삭제에 성공한다")
+    @Test
+    void deleteComment() throws Exception{
+        //given
+        final String url = "/api/comments/{id}";
+        Article savedArticle = createDefaultArticle();
+        Comment comment = createDefaultComment(savedArticle);
+
+        //when
+        mockMvc.perform(delete(url, comment.getId())).andExpect(status().isOk());
+
+        //then
+        List<Comment> comments = commentRepository.findAll();
+
+        assertThat(comments).isEmpty();
+    }
+
+    @DisplayName("updateComment : 댓글 수정에 성공한다")
+    @Test
+    void updateComment() throws Exception{
+        //given
+        final String url = "/api/comments/{id}";
+        Article savedArticle = createDefaultArticle();
+        Comment comment = createDefaultComment(savedArticle);
+
+        String newContent = "newContent";
+        UpdateCommentRequest request = new UpdateCommentRequest(newContent);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(put(url, comment.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request))
+        );
+
+
+        //then
+        resultActions.andExpect(status().isOk());
+
+        Comment updatedComment = commentRepository.findById(comment.getId()).get();
+
+        assertThat(updatedComment.getContent()).isEqualTo(newContent);
+    }
+
     private Article createDefaultArticle() {
         return blogRepository.save(Article.builder()
                 .title("title")
+                .author(user.getUsername())
+                .content("content")
+                .build());
+
+    }
+
+    private Comment createDefaultComment(Article article) {
+        return commentRepository.save(Comment.builder()
+                .article(article)
                 .author(user.getUsername())
                 .content("content")
                 .build());

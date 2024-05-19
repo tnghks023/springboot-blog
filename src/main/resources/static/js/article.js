@@ -151,6 +151,7 @@ if(logoutBtn) {
     });
 }
 
+
 // 댓글 생성
 const commentCreateButton = document.getElementById('comment-create-btn');
 
@@ -174,3 +175,80 @@ if(commentCreateButton) {
         httpRequest('POST', '/api/comments', body, success, fail)
     });
 }
+
+// 댓글 삭제
+document.querySelectorAll('.comment-delete-btn').forEach(button => {
+     button.addEventListener('click', event => {
+            commentId = document.getElementById('comment-id').value;
+            articleId = document.getElementById('article-id').value;
+
+            function success() {
+                alert('댓글삭제가 완료되었습니다.');
+                location.replace('/articles/'+articleId);
+            };
+            function fail() {
+                alert('댓글삭제에 실패했습니다.');
+            }
+
+            httpRequest('DELETE', '/api/comments/' + commentId, null, success, fail)
+     });
+})
+
+// 댓글 수정
+document.querySelectorAll('.comment-modify-pop-btn').forEach(button => {
+
+    button.addEventListener('click', (event) => {
+        const section = event.target.closest('section');
+        const cardBody = section.querySelector('.card-body');
+        const commentText = cardBody.querySelector('.card-text').textContent;
+
+        // Remove existing text area and modify button if they already exist
+
+        let textArea = null;
+
+        const existingTextArea = section.querySelector('textarea');
+        if (existingTextArea) {
+            existingTextArea.remove();
+        } else {
+            // Create and insert text area
+            textArea = document.createElement('textarea');
+            textArea.className = 'form-control mb-2 mt-2';
+            textArea.value = commentText;
+            section.appendChild(textArea);
+        }
+
+        const existingModifyButton = section.querySelector('.modify-btn');
+
+        if (existingModifyButton) {
+            existingModifyButton.remove();
+        } else {
+            // Create and insert modify button
+            const modifyButton = document.createElement('button');
+            modifyButton.className = 'modify-btn btn btn-success btn-sm';
+            modifyButton.textContent = 'Save';
+            section.appendChild(modifyButton);
+
+            modifyButton.addEventListener('click', () => {
+                const updatedText = textArea.value;
+
+                commentId = document.getElementById('comment-id').value;
+                articleId = document.getElementById('article-id').value;
+
+                body = JSON.stringify({
+                    content : textArea.value
+                });
+
+                function success() {
+                    alert('댓글수정이 완료되었습니다.');
+                    location.replace('/articles/'+articleId);
+                };
+                function fail() {
+                    alert('댓글수정에 실패했습니다.');
+                }
+
+                httpRequest('PUT', '/api/comments/' + commentId, body, success, fail)
+            });
+        }
+    })
+})
+

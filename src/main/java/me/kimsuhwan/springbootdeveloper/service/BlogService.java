@@ -8,6 +8,7 @@ import me.kimsuhwan.springbootdeveloper.domain.Comment;
 import me.kimsuhwan.springbootdeveloper.dto.AddArticleRequest;
 import me.kimsuhwan.springbootdeveloper.dto.AddCommentRequest;
 import me.kimsuhwan.springbootdeveloper.dto.UpdateArticleRequest;
+import me.kimsuhwan.springbootdeveloper.dto.UpdateCommentRequest;
 import me.kimsuhwan.springbootdeveloper.repository.BlogRepository;
 import me.kimsuhwan.springbootdeveloper.repository.CommentRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,6 +54,42 @@ public class BlogService {
         return article;
     }
 
+
+    public Comment addComment(AddCommentRequest request, String userName) {
+        Article article = blogRepository.findById(request.getArticleId())
+                .orElseThrow(ArticleNotFoundException::new);
+
+        return commentRepository.save(request.toEntity(userName, article));
+    }
+
+    public void deleteComment(long commentId) {
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + commentId));
+
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        authorizeCommentAuthor(comment);
+
+        commentRepository.deleteById(commentId);
+    }
+
+    @Transactional
+    public Comment updateComment(long commentId, UpdateCommentRequest request) {
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + commentId));
+
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        authorizeCommentAuthor(comment);
+        comment.update(request.getContent());
+
+        return comment;
+    }
+
+
+
     //게시글을 작성한 유저인지 확인
     private static void authorizeArticleAuthor(Article article) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -62,11 +99,13 @@ public class BlogService {
         }
     }
 
-    public Comment addComment(AddCommentRequest request, String userName) {
-        Article article = blogRepository.findById(request.getArticleId())
-                .orElseThrow(ArticleNotFoundException::new);
+    //댓글을 작성한 유저인지 확인
+    private static void authorizeCommentAuthor(Comment comment) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return commentRepository.save(request.toEntity(userName, article));
+        if(!comment.getAuthor().equals(userName)){
+            throw new IllegalArgumentException("not authorized");
+        }
     }
 
 

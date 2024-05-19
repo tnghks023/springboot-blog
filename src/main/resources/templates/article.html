@@ -42,15 +42,17 @@
                 </div>
             </section>
             <section class="mb-3" th:each="comment : ${article.comments}">
+                <input type="hidden" id="comment-id" th:value="${comment.id}" >
                 <div class="card mb-1">
                     <div class="card-body">
                         <div class="text-muted fst-italic mb-2"
                              th:text="|Commented on ${#temporals.format(comment.createdAt, 'yyyy-MM-ddHH:mm')} By ${comment.author}">
                         </div>
                         <p class="card-text" th:text="${comment.content}"></p>
-
                     </div>
                 </div>
+                <button type="button" class="comment-modify-pop-btn btn btn-primary btn-sm"> 수정</button>
+                <button type="button" class="comment-delete-btn btn btn-secondary btn-sm"> 삭제</button>
             </section>
         </div>
     </div>
