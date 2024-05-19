@@ -85,6 +85,10 @@ function getCookie(key) {
     return result;
 }
 
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01, Jan 1970 00:00:01 GMT;';
+}
+
 // HTTP 요청을 보내는 함수
 function httpRequest(method, url, body, success, fail) {
     fetch(url, {
@@ -125,3 +129,25 @@ function httpRequest(method, url, body, success, fail) {
     });
 }
 
+// 로그아웃
+const logoutBtn = document.getElementById("logout-btn");
+
+if(logoutBtn) {
+    logoutBtn.addEventListener("click", (event) => {
+
+        function success() {
+            alert("로그아웃이 완료되었습니다.");
+            localStorage.removeItem("access_token");
+            deleteCookie("refresh_token");
+
+            location.replace("/login");
+        }
+
+        function fail() {
+            alert("로그아웃이 실패했습니다.");
+        }
+
+        httpRequest('DELETE', '/api/refresh-token' null, success, fail);
+    })
+
+}
