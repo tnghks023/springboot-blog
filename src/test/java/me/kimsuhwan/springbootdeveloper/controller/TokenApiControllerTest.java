@@ -64,6 +64,7 @@ import java.util.Map;
         user = userRepository.save(User.builder()
                 .email("user@gmail.com")
                 .password("test")
+                        .provider("google")
                 .build());
 
         SecurityContext context = SecurityContextHolder.getContext();

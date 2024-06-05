@@ -80,6 +80,7 @@ class BlogApiControllerTest {
         user = userRepository.save(User.builder()
                 .email("user@email.com")
                 .password("test")
+                        .provider("google")
                 .build());
 
         SecurityContext context = SecurityContextHolder.getContext();

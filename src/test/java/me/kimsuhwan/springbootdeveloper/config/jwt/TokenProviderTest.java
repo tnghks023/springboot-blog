@@ -33,6 +33,7 @@ public class TokenProviderTest {
         User testUser = userRepository.save(User.builder()
                 .email("user@email.com")
                 .password("test")
+                        .provider("google")
                 .build()
         );
         //when
