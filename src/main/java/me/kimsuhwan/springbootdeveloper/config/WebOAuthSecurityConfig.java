@@ -61,7 +61,7 @@ public class WebOAuthSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(new AntPathRequestMatcher("/api/token"))
                         .permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/**"))
+                        .requestMatchers(new AntPathRequestMatcher("/api/**"), new AntPathRequestMatcher("/articles/**"))
                         .authenticated()
                         .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> oauth2

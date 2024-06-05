@@ -9,6 +9,7 @@ import me.kimsuhwan.springbootdeveloper.domain.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -40,6 +41,7 @@ public class TokenProvider {
                 .setExpiration(expiry) // 내용 exp(만료일시) : expiry 멤버 변숫값
                 .setSubject(user.getEmail()) // 내용 sub(토큰 제목) : 유저의 이메일
                 .claim("id", user.getId()) // 클레임 id : 유저 ID
+                .claim("reg", user.getProvider())
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
                 .compact();
     }
@@ -73,7 +75,13 @@ public class TokenProvider {
         return claims.get("id", Long.class);
     }
 
-    private Claims getClaims(String token) {
+    // 토큰 기반으로 유저 registration ID를 가져오는 메소드
+    public String getRegistrationId(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("reg", String.class);
+    }
+
+    public Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtProperties.getSecretKey())
                 .parseClaimsJws(token)

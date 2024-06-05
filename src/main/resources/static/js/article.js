@@ -89,6 +89,32 @@ function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01, Jan 1970 00:00:01 GMT;';
 }
 
+//like btn
+const likeBtn = document.getElementById("like-btn");
+if(likeBtn) {
+
+    likeBtn.addEventListener("click", (event) => {
+    let id = document.getElementById('article-id').value;
+        body = JSON.stringify({
+            articleId: id
+        });
+        function success() {
+            alert("좋아요를 완료했습니다..");
+           let likeCount = document.getElementById('like-cnt');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
+            // Change the button style and text
+            likeBtn.textContent = 'Liked!';
+            likeBtn.classList.remove('btn-primary');
+            likeBtn.classList.add('btn-danger');
+        }
+        function fail() {
+            alert("등록 실패했습니다.");
+        }
+
+        httpRequest("PUT", "/articles/"+id+"/like", body, success, fail);
+    });
+}
+
 // HTTP 요청을 보내는 함수
 function httpRequest(method, url, body, success, fail) {
     fetch(url, {

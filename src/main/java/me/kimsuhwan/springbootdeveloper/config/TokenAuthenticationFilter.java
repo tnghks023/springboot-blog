@@ -2,6 +2,7 @@ package me.kimsuhwan.springbootdeveloper.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
@@ -28,9 +30,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         //요청 헤더의 Authorization 키의 값 조회
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+        Cookie[] cookies =  request.getCookies();
 
         // 가져온 값에서 접두사 제거
         String token = getAccessToken(authorizationHeader);
+
+        if(token == null) {
+            token = Arrays.stream(cookies)
+                    .filter(cookie -> "refresh_token".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst()
+                    .orElse(null);
+        }
 
         // 가져온 토큰이 유효한지 확인하고, 유효한 때는 인증 정보 설정
         if(tokenProvider.validToken(token)) {

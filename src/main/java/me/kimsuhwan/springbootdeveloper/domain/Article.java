@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @EntityListeners(AuditingEntityListener.class) //엔티티의 생성 및 수정시간을 자동으로 감시하고 기록
 @Entity
@@ -52,6 +52,9 @@ public class Article {
     @OrderBy("createdAt DESC") // Order comments by creation date in ascending order
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserLike> userLikes;
+
     @Builder
     public Article(String author, String title, String content, int likes, int views){
         this.author = author;
@@ -70,8 +73,22 @@ public class Article {
         this.likes++;
     }
 
+//    public void decrementLikes() {
+//        this.likes--;
+//    }
+
     public void incrementViews() {
         this.views++;
     }
+
+    public void addLike(UserLike userLike) {
+        userLikes.add(userLike);
+        incrementLikes();
+    }
+
+//    public void minusLike(UserLike userLike) {
+//        userLikes.remove(userLike);
+//        decrementLikes();
+//    }
 
 }

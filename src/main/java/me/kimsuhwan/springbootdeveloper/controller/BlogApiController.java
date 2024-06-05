@@ -63,6 +63,8 @@ public class BlogApiController {
 
     @PostMapping("/api/comments")
     public ResponseEntity<AddCommentResponse> addComment(@RequestBody AddCommentRequest request, Principal principal) {
+
+
         Comment savedComment = blogService.addComment(request, principal.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -81,6 +83,16 @@ public class BlogApiController {
         Comment updatedComment = blogService.updateComment(id, request);
 
         return ResponseEntity.ok().body(updatedComment);
+    }
+
+    @PutMapping("/articles/{articleId}/like")
+    public ResponseEntity<String> likeArticle(@PathVariable Long articleId) {
+        try {
+            blogService.likeArticle(articleId);
+            return ResponseEntity.ok("Article liked successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

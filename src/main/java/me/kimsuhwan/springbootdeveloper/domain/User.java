@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -34,6 +36,13 @@ public class User implements UserDetails {
     @Column(name = "provider", nullable = false)
     private String provider;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserLike> userLikes;
+
+    public boolean hasLikedArticle(Article article) {
+        return userLikes.stream().anyMatch(userLike -> userLike.getArticle().equals(article));
+    }
+
     @Builder
     public User(String email, String password, String auth, String nickname, String provider) {
         this.email = email;
@@ -47,6 +56,7 @@ public class User implements UserDetails {
 
         return this;
     }
+
 
     //권한 반환
     @Override
