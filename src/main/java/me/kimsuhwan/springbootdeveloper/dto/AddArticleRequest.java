@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.kimsuhwan.springbootdeveloper.domain.Article;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

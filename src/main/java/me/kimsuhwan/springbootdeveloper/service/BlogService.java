@@ -1,6 +1,5 @@
 package me.kimsuhwan.springbootdeveloper.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.kimsuhwan.springbootdeveloper.config.error.exception.ArticleNotFoundException;
 import me.kimsuhwan.springbootdeveloper.domain.Article;
@@ -11,8 +10,11 @@ import me.kimsuhwan.springbootdeveloper.dto.UpdateArticleRequest;
 import me.kimsuhwan.springbootdeveloper.dto.UpdateCommentRequest;
 import me.kimsuhwan.springbootdeveloper.repository.BlogRepository;
 import me.kimsuhwan.springbootdeveloper.repository.CommentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,8 +29,8 @@ public class BlogService {
         return blogRepository.save(request.toEntity(userName));
     }
 
-    public List<Article> findAll(){
-        return blogRepository.findAllByOrderByCreatedAtDesc();
+    public Page<Article> findAll(Pageable pageable){
+        return blogRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
     public Article findById(long id ) {
@@ -52,6 +54,11 @@ public class BlogService {
         article.update(request.getTitle(), request.getContent());
 
         return article;
+    }
+
+    @Transactional
+    public void viewSave(Article article) {
+        blogRepository.save(article);
     }
 
 

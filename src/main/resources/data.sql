@@ -1,5 +1,12 @@
-INSERT INTO article (title, content, author,created_at, updated_at) VALUES ('제목 1', '내용 1', 'user1',NOW(),NOW())
-INSERT INTO comments (article_id, author, content, created_at) values (1, 'user4', '댓글1', NOW())
-INSERT INTO comments (article_id, author, content, created_at) values (1, 'user5', '댓글2', NOW())
-INSERT INTO article (title, content, author, created_at, updated_at) VALUES ('제목 2', '내용 2', 'user2',NOW(),NOW())
-INSERT INTO article (title, content, author, created_at, updated_at) VALUES ('제목 3', '내용 3', 'user3',NOW(),NOW())
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 1', '내용 1', 'user1', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 2', '내용 2', 'user2', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 3', '내용 3', 'user3', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 4', '내용 1', 'user4', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 5', '내용 2', 'user5', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 6', '내용 3', 'user6', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 7', '내용 1', 'user7', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 8', '내용 2', 'user8', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 9', '내용 3', 'user9', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 10', '내용 1', 'user10', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 11', '내용 2', 'user11', NOW(), NOW(), 0, 0);
+INSERT INTO article (title, content, author, created_at, updated_at, likes, views) VALUES ('제목 12', '내용 3', 'user12', NOW(), NOW(), 0, 0);

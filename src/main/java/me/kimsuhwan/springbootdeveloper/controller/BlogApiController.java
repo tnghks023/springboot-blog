@@ -5,6 +5,8 @@ import me.kimsuhwan.springbootdeveloper.domain.Article;
 import me.kimsuhwan.springbootdeveloper.domain.Comment;
 import me.kimsuhwan.springbootdeveloper.dto.*;
 import me.kimsuhwan.springbootdeveloper.service.BlogService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,8 +29,14 @@ public class BlogApiController {
     }
 
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-        List<ArticleResponse> articles = blogService.findAll().stream().map(ArticleResponse::new).toList();
+    public ResponseEntity<List<ArticleResponse>> findAllArticles(
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "5", name = "size") int size
+     ) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ArticleResponse> articles = blogService.findAll(pageable).stream()
+                .map(ArticleResponse::new)
+                .toList();
 
         return ResponseEntity.ok().body(articles);
     }
@@ -51,8 +59,6 @@ public class BlogApiController {
         Article updatedArticle = blogService.update(id, request);
 
         return ResponseEntity.ok().body(updatedArticle);
-
-
     }
 
     @PostMapping("/api/comments")

@@ -12,6 +12,7 @@ import me.kimsuhwan.springbootdeveloper.repository.RefreshTokenRepository;
 import me.kimsuhwan.springbootdeveloper.service.UserService;
 import me.kimsuhwan.springbootdeveloper.util.CookieUtil;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -41,8 +42,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) throws IOException {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        User user = userService.findByEmail((String) oAuth2User.getAttributes().get("email"));
+
+        final OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        final String registrationId = oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+        final OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
+        UserProfile userProfile = OAuthAttributes.extract(registrationId, oAuth2User.getAttributes());
+        User user = userService.findByEmailAndProvider(userProfile.getEmail(), registrationId);
+
 
         // 리프레시 토큰 생성 -> 저장 -> 쿠키에 저장
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);

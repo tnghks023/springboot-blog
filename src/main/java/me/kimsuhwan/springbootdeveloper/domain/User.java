@@ -31,11 +31,15 @@ public class User implements UserDetails {
     @Column(name = "nickname", unique = true)
     private String nickname;
 
+    @Column(name = "provider", nullable = false)
+    private String provider;
+
     @Builder
-    public User(String email, String password, String auth, String nickname) {
+    public User(String email, String password, String auth, String nickname, String provider) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.provider = provider;
     }
 
     public User update(String nickname) {
@@ -43,8 +47,6 @@ public class User implements UserDetails {
 
         return this;
     }
-
-
 
     //권한 반환
     @Override
