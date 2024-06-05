@@ -35,7 +35,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         // 가져온 값에서 접두사 제거
         String token = getAccessToken(authorizationHeader);
 
-        if(token == null) {
+        if(token == null && cookies != null) {
             token = Arrays.stream(cookies)
                     .filter(cookie -> "refresh_token".equals(cookie.getName()))
                     .map(Cookie::getValue)
