@@ -4,19 +4,19 @@ spring:
       client:
         registration:
           google:
-            client-id: 690288168069-hhk5nu5ftkvaoqblmutpet7h6sgod7k2.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${google-id}
+            client-secret: ${google-secret}
             scope:
               - email
               - profile
           github:
-            client-id: Ov23lirkVjoBmtm2ZSrJ
-            client-secret: bad1d624c802d0e4a472e0024753154c4328031e
+            client-id: ${github-id}
+            client-secret: ${github-secret}
 
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    sql-script-encoding: UTF-8
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    sql-script-encoding: UTF-8
   h2:
     console:
       enabled: true
