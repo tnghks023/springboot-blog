@@ -21,30 +21,44 @@
 
 <div class="container">
     <div class="d-flex justify-content-between mb-3">
-        <button type="button" id="create-btn" th:onclick="|location.href='@{/new-article}'|"
-                class="btn btn-secondary btn-sm mb-3">글 등록
-        </button>
-        <div class>
+        <div>
+            <button type="button" th:onclick="|location.href='@{/articles(order='LIKES', page=${currentPage}, size=${size})}'|"
+                    class="btn btn-secondary btn-sm mb-3">좋아요 많은 순
+            </button>
+            <button type="button" th:onclick="|location.href='@{/articles(order='LATEST', page=${currentPage}, size=${size})}'|"
+                    class="btn btn-secondary btn-sm mb-3">최신순
+            </button>
+            <button type="button" th:onclick="|location.href='@{/articles(order='VIEWS', page=${currentPage}, size=${size})}'|"
+                    class="btn btn-secondary btn-sm mb-3">조회수 많은 순
+            </button>
+        </div>
+        <div>
             <div class="mb-3" th:text="'Page ' + ${currentPage + 1} + ' of ' + ${totalPages}"></div>
             <div class="pagination">
-                <a class="btn btn-primary" th:href="@{/articles(page=${currentPage - 1}, size=${size})}"
+                <a class="btn btn-primary" th:href="@{/articles(page=${currentPage - 1}, size=${size}, order=${order})}"
                    th:if="${currentPage > 0}">Previous</a>
 
                 <!-- Numbered Pagination -->
                 <span th:each="page : ${#numbers.sequence(0, totalPages - 1)}">
-                <a class="btn btn-light pagination-item" th:href="@{/articles(page=${page}, size=${size})}"
+                <a class="btn btn-light pagination-item" th:href="@{/articles(page=${page}, size=${size}, order=${order})}"
                    th:text="${page + 1}"
                    th:classappend="${page == currentPage} ? 'active' : ''"></a>
             </span>
 
-                <a class="btn btn-primary" th:href="@{/articles(page=${currentPage + 1}, size=${size})}"
+                <a class="btn btn-primary" th:href="@{/articles(page=${currentPage + 1}, size=${size}, order=${order})}"
                    th:if="${currentPage + 1 < totalPages}">Next</a>
             </div>
         </div>
 
-        <button id="logout-btn" type="button" class="btn btn-secondary btn-sm mb-3" onclick="location.href='/logout'">
-            로그아웃
-        </button>
+        <div>
+            <button type="button" id="create-btn" th:onclick="|location.href='@{/new-article}'|"
+                    class="btn btn-secondary btn-sm mb-3">글 등록
+            </button>
+            <button id="logout-btn" type="button" class="btn btn-secondary btn-sm mb-3"
+                    onclick="location.href='/logout'">
+                로그아웃
+            </button>
+        </div>
     </div>
 
 
@@ -58,7 +72,7 @@
                     <span class="card-text" th:text="|likes : ${item.likes}|"></span>
                     <span class="card-text ms-2" th:text="|views : ${item.views}|"></span>
                 </div>
-                <a th:href="@{/articles/{id}(id=${item.id})}" class="btn btn-primary">보러 가기</a>
+                <a th:href="@{/articles/{id}(id=${item.id}, page=${currentPage}, order=${order})}" class="btn btn-primary">보러 가기</a>
             </div>
             <div class="card-footer text-muted"
                  th:text="|${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')} By ${item.author}|">
@@ -71,17 +85,17 @@
     <div class="mb-5">
         <div class="mb-3" th:text="'Page ' + ${currentPage + 1} + ' of ' + ${totalPages}"></div>
         <div class="pagination">
-            <a class="btn btn-primary" th:href="@{/articles(page=${currentPage - 1}, size=${size})}"
+            <a class="btn btn-primary" th:href="@{/articles(page=${currentPage - 1}, size=${size}, order=${order})}"
                th:if="${currentPage > 0}">Previous</a>
 
             <!-- Numbered Pagination -->
             <span th:each="page : ${#numbers.sequence(0, totalPages - 1)}">
-                <a class="btn btn-light pagination-item" th:href="@{/articles(page=${page}, size=${size})}"
+                <a class="btn btn-light pagination-item" th:href="@{/articles(page=${page}, size=${size}, order=${order})}"
                    th:text="${page + 1}"
                    th:classappend="${page == currentPage} ? 'active' : ''"></a>
             </span>
 
-            <a class="btn btn-primary" th:href="@{/articles(page=${currentPage + 1}, size=${size})}"
+            <a class="btn btn-primary" th:href="@{/articles(page=${currentPage + 1}, size=${size}, order=${order})}"
                th:if="${currentPage + 1 < totalPages}">Next</a>
         </div>
     </div>

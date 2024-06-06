@@ -26,14 +26,14 @@
                 </section>
                 <section class="mb-5">
                     <!-- Like button -->
-                    <p id="like-cnt" th:text="${article.likes}"></p>
+                    <span class="me-3" id="like-cnt" th:text="${article.likes}"></span>
                     <button type="button" id="like-btn" th:classappend="${userLiked ? 'btn-danger' : 'btn-primary'}" th:text="${userLiked ? 'Liked!' : 'Like'}" class="btn btn-sm"></button>
                     <p class="fs-5 mb-4" th:text="|조회수 : ${article.views}|"></p>
                 </section>
 
                 <button type="button" id="modify-btn" th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|" class="btn btn-primary btn-sm"> 수정</button>
                 <button type="button" id="delete-btn" class="btn btn-secondary btn-sm"> 삭제</button>
-                <a th:href="@{/articles}" class="btn btn-info btn-sm">목록</a>
+                <a th:href="@{/articles(page=${page}, order=${order})}" class="btn btn-info btn-sm">목록</a>
             </article>
 
             <hr class="mt-5">

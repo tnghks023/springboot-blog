@@ -45,6 +45,14 @@ public class BlogService {
         return blogRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
+    public Page<Article> findAllOrderByLikes(Pageable pageable) {
+        return blogRepository.findAllByOrderByLikesDesc(pageable);
+    }
+
+    public Page<Article> findAllOrderByViews(Pageable pageable) {
+        return blogRepository.findAllByOrderByViewsDesc(pageable);
+    }
+
     public Article findById(long id) {
         return blogRepository.findById(id)
                 .orElseThrow(ArticleNotFoundException::new);
